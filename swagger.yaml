@@ -1,0 +1,375 @@
+swagger: "2.0"
+info:
+  description: |
+    # Introduction
+    This  document outlines how you can use a client application access different Nuance services using our HTTP API.
+    Nuance's API provides access to the following services:
+      - Speech Recognition
+      - Dialog
+      - Speech Recognition & Dialog
+      - NLU
+      - Speech Recognition & NLU
+      - Text to Speech (TTS)
+      - Vocal Password
+    # API Basics
+      - All requests must be sent with a JSON body and must include the `Content-Type: application/json' request header.
+      - For every request, you have the option of including an optional user id (ie: representing a specific client in your backend). In doing so, the response returned to you will take into account the past interaction history that the Nuance API has had with that user.
+      - All audio files must be in WAV, MP4 or AAC format.
+      - All audio returned from the Nuance API are a stream of RAW PCM data that your application is in charge of processing.
+    # Authentication
+    You must include the following header in every request to authenticate. You must makre sure that your application does not expose these credentials to end users.:
+      - `nmaid: <your nmaid>`,
+      - `nmaidkey: <your nmaid key>`
+  x-logo:
+    url: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a8/Nuance_Communications_logo.svg/640px-Nuance_Communications_logo.svg.png"
+  version: "1.0.0"
+  title: Nuance HTTP API
+host: <ip>
+basePath: /nina-webapi/
+schemes:
+  - https
+tags:
+  - name: Speech Recognition
+    description: Speech Recognition Functions
+  - name: TTS
+    description: Text To Speech Functions
+  - name: NLU
+    description: Natural Language Understanding Functions
+  - name: Dialog
+    description: Dialog Functions
+  - name: Vocal Password
+    description: Vocal password functions allow you to authenticate a user using their voice.
+paths:
+  /DoSpeechRecognition:
+    post:
+      tags:
+        - Speech Recognition
+      summary: Speech Recognition
+      description: "Does speech recognition operations on an audio file using the MREC, NTE or NR engines and returns the results."
+      operationId: speechRecognition
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/Speech_Reco_Payload"
+      responses:
+        "200":
+          description: Successful operation.
+          schema:
+            $ref: "#/definitions/Speech_Reco_Response"
+        "400":
+          description: Bad request. Invalid or missing parameter.
+        "401":
+          description: Unauthorized. API key is missing or invalid.
+  /TTS:
+    post:
+      tags:
+        - TTS
+      summary: Text To Speech
+      description: "Does TTS operations on the provided string and returns the results."
+      operationId: TTS
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/playaudio_payload"
+      responses:
+        "200":
+          description: ByteBuffer of raw PCM Data.
+        "400":
+          description: Bad request. Invalid or missing parameter.
+        "401":
+          description: Unauthorized. API key is missing or invalid.
+  /NinaDoNLU:
+    post:
+      tags:
+        - NLU
+      summary: NLU
+      description: "Does NLU operations on a text string using the NR or NLE engines and returns the results."
+      operationId: NLU
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/nlu_payload"
+      responses:
+        "200":
+          description: Successful operation.
+          schema:
+            $ref: "#/definitions/nlu_response"
+        "400":
+          description: Bad request. Invalid or missing parameter.
+        "401":
+          description: Unauthorized. API key is missing or invalid.
+          
+definitions:
+  Speech_Reco_Payload:
+    type: object
+    required:
+      - sr_audio_file
+      - sr_engine
+    properties:
+      sr_audio_file:
+        description: Direct URL to the audio file. Must be a WAV, MP4 or AAC file.
+        type: string
+        example: https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav
+      sr_engine:
+        description: The sr_engine parameter is optional, the default engine is specified by your licence file (specific to a given NMAID ID) This value must be MREC, NTE or NR.
+        type: string
+        example: MREC, NR, or NTE
+      sr_engine_parameters:
+        description: The sr_engine_parameters parameter is an optional json object and only looked at when engine = NTE.
+        allOf:
+          - $ref: '#/definitions/sr_engine_parameters'
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  sr_engine_parameters:
+    type: object
+    required:
+      - operating_mode
+    properties:
+      operating_mode:
+        description: The operating mode. Must be accurate, fast or warp.
+        type: strings
+        example: accurate
+  Speech_Reco_Response:
+    type: object
+    required:
+      - transcription
+    properties:
+      transcription:
+        description: The transcription results.
+        type: string
+        example: "Hello"
+  playaudio_payload:
+    type: object
+    required:
+      - text
+    properties:
+      text:
+        description: The text for which the TTS service should be performed.
+        type: string
+        example: Hello!
+      tts-type:
+        description: This parameter is optional and has a default value of text. Its value must text, ssml or uri.
+        type: string
+        example: text
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  nlu_payload:
+    type: object
+    required:
+      - text
+    properties:
+      text:
+        description: The input text on which to perform NLU.
+        type: string
+        example: Hello!
+      nlu_engine:
+        description: This parameter is optional, the default engine is specified by your licence file (specific to your NMAID). Its value must be NR or NLE.
+        type: string
+        example: NR
+      nlu_engine_parameters:
+        description: This parameter is an optional json object and only looked at when nlu_engine = NLE.
+        allOf:
+          - $ref: '#/definitions/nlu_engine_parameters'
+      companyName:
+        type: string
+        description: The Company Name. 
+        example: My Company Name
+      appName:
+        type: string
+        description: The App Name. 
+        example: My App Name
+      cloudModelVersion:
+        type: string
+        description: The Cloud Model Version. 
+        example: 1.0.0  
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  nlu_engine_parameters:
+    type: object
+    required:
+      - nleModelURL
+      - nleModelName
+    properties:
+      nleModelURL:
+        type: string
+      nleModelName:
+        type: string
+  nlu_response:
+    type: object
+    required:
+      - results
+    properties:
+      results:
+        description: The results of the NLU operation.
+        type: array
+        items:
+          $ref: '#/definitions/nlu_result_item'
+  nlu_result_item:
+    type: object
+    required:
+      - concepts
+      - confidence
+      - intent
+      - literal
+    properties:
+      concepts:
+        description: The concepts.
+        type: array
+      confidence:
+        description: The confidence level of the NLU result.
+        type: integer
+        format: int32
+        example: 25
+      intent:
+        description: The intent.
+        type: string
+        example: SOCIAL_GREETING
+      literal:
+        description: The literal.
+        type: string
+        example: hello
+  dialog_payload:
+    type: object
+    required:
+      - text
+    properties:
+      text:
+        description: The input text.
+        type: string
+        example: Hello
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  dialog_engine_parameters:
+    type: object
+    required:
+      - language
+      - nleModelURL
+      - nleModelName
+      - nceModelURL
+      - nceModelName
+      - nceModelVersion
+    properties:
+      language:
+        type: string
+      nleModelURL:
+        type: string
+      nleModelName:
+        type: string
+      nceModelURL:
+        type: string
+      nceModelName:
+        type: string
+      nceModelVersion:
+        type: string
+  dialog_response:
+    type: object
+    required:
+      - OutText
+      - AlternateOutText
+      - AlternateOutText2
+    properties:
+      OutText:
+        type: string
+        example: Good afternoon! I'm Nina your virtual assistant. How can I help you?
+      AlternateOutText:
+        type: string
+        example: Good afternoon! I'm Nina your virtual assistant. How can I help you?
+      AlternateOutText2:
+        type: string
+        example: Good afternoon! I'm Nina your virtual assistant. How can I help you?
+  Speech_Reco_Dialog_Payload:
+    type: object
+    required:
+      - sr_audio_file
+    properties:
+      sr_audio_file:
+        description: Direct URL to the audio file. Must be a WAV, MP4 or AAC file.
+        type: string
+        example: https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav
+      sr_engine:
+        description: The sr_engine parameter is optional, the default engine is specified by your licence file (specific to a given NMAID ID).
+        type: string
+        example: MREC, NR, or NTE
+      sr_engine_parameters:
+        description: The sr_engine_parameters parameter is an optional json object and only looked at when engine = NTE.
+        allOf:
+          - $ref: '#/definitions/sr_engine_parameters'
+      dialog_engine:
+        description: This parameter is optional. The default engine is specified in your licence file (specific to your NMAID). Its value must be NIW or NCE.
+        type: string
+        example: NIW
+      dialog_engine_parameters:
+        description: This parameter is an optional json object and only looked at when nlu_engine = NCE.
+        allOf:
+          - $ref: '#/definitions/dialog_engine_parameters'
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  Speech_Reco_NLU_Payload:
+    type: object
+    required:
+      - sr_audio_file
+    properties:
+      sr_audio_file:
+        description: Direct URL to the audio file. Must be a WAV, MP4 or AAC file.
+        type: string
+        example: https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav
+      sr_engine:
+        description: The sr_engine parameter is optional, the default engine is specified by your licence file (specific to a given NMAID ID).
+        type: string
+        example: MREC, NR, or NTE
+      sr_engine_parameters:
+        description: The sr_engine_parameters parameter is an optional json object and only looked at when engine = NTE.
+        allOf:
+          - $ref: '#/definitions/sr_engine_parameters'
+      nlu_engine:
+        description: This parameter is optional, the default engine is specified by your licence file (specific to your NMAID). Its value must be NR or NLE.
+        type: string
+        example: NR
+      nlu_engine_parameters:
+        description: This parameter is an optional json object and only looked at when nlu_engine = NLE.
+        allOf:
+          - $ref: '#/definitions/nlu_engine_parameters'
+      user:
+        description: The user id  for who this request is being executed.
+        type: string
+        example: "123423"
+  errorModel:
+    type: object
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+Contact GitHub API Training Shop Blog About
