@@ -120,7 +120,7 @@ paths:
     post:
       tags:
         - Vocal Password
-      summary: Vocal Password
+      summary: ninaEnrollUser
       description: "Making a request to this API allows you to enroll a user, which associates their id. You should prompt the say the <My voice is my voice is my password> multiple times until the server tells you the user has been trained."
       operationId: NLU
       consumes:
