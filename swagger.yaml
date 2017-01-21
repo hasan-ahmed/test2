@@ -384,6 +384,19 @@ definitions:
         description: The user id  for who this request is being executed.
         type: string
         example: "123423"
+  ninaVerifyUserEnrollment:
+    type: object
+    required:
+      - name
+      - speakerID
+    properties:
+      name:
+        type: string
+        example: ninaEnrollUser
+      speakerID:
+        type: string
+        description: The id of the user for who enrollment is being verified.
+        example: s699sh23         
   ninaEnrollUser:
     type: object
     required:
