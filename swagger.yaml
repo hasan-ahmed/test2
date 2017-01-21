@@ -115,7 +115,7 @@ paths:
           description: Bad request. Invalid or missing parameter.
         "401":
           description: Unauthorized. API key is missing or invalid.
-  /VocalPassword:
+  /VocalPassword/ninaEnrollUser:
     post:
       tags:
         - Vocal Password
@@ -139,7 +139,7 @@ paths:
           description: Bad request. Invalid or missing parameter.
         "401":
           description: Unauthorized. API key is missing or invalid.
-  /VocalPassword:
+  /VocalPassword/ninaAuthenticateUser:
     post:
       tags:
         - Vocal Password
