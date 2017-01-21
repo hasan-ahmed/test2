@@ -116,7 +116,6 @@ paths:
           description: Bad request. Invalid or missing parameter.
         "401":
           description: Unauthorized. API key is missing or invalid.
-          
 definitions:
   Speech_Reco_Payload:
     type: object
@@ -361,6 +360,52 @@ definitions:
         description: The user id  for who this request is being executed.
         type: string
         example: "123423"
+  ninaEnrollUser:
+    type: object
+    required:
+      - name
+      - speakerID
+      - audio
+    properties:
+      name:
+        type: string
+        example: ninaEnrollUser
+      speakerID:
+        type: string
+        description: The id of the user for who the vocal password is being created.
+        example: s699sh23
+      audio:
+        type: string
+        description: A string containing audio that is base 64 and URL Encoded
+    ninaVerifyUserEnrollment:
+    type: object
+    required:
+      - name
+      - speakerID
+    properties:
+      name:
+        type: string
+        example: ninaEnrollUser
+      speakerID:
+        type: string
+        description: The id of the user for who enrollment is being verified.
+        example: s699sh23    
+  ninaAuthenticateUser:
+    type: object
+    required:
+      - name
+      - speakerID
+      - audio
+    properties:
+      name:
+        type: string
+        example: ninaEnrollUser
+      speakerID:
+        type: string
+        description: The id of the user for who enrollment is being verified. 
+      audio:
+        type: string
+        description: A string containing audio that is base 64 and URL Encoded  
   errorModel:
     type: object
     required:
