@@ -401,7 +401,7 @@ definitions:
       audio:
         type: string
         description: A string containing audio that is base 64 and URL Encoded
-    ninaVerifyUserEnrollment:
+  ninaVerifyUserEnrollment:
     type: object
     required:
       - name
