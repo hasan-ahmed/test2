@@ -158,7 +158,16 @@ paths:
             $ref: "#/definitions/ninaAuthenticateUser"
       responses:
         "200":
-          description: "{\"VocalPassword\":{\"EnrollStatus\":{\"xmlns\":\"http://www.nuance.com/webservices/\",\"content\":\"Trained\"}}}"
+          description: |
+            {
+                "VocalPassword": {
+                    "final_response" : true,
+                    "Results": {
+                        "Decision": "Match",
+                        "SpeakerId": 12345
+                    }
+                }
+            }
         "400":
           description: Bad request. Invalid or missing parameter.
         "401":
