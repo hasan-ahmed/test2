@@ -392,11 +392,27 @@ definitions:
     properties:
       name:
         type: string
-        example: ninaEnrollUser
+        example: ninaVerifyUserEnrollment
       speakerID:
         type: string
         description: The id of the user for who enrollment is being verified.
-        example: s699sh23         
+        example: s699sh23
+  ninaAuthenticateUser:
+    type: object
+    required:
+      - name
+      - speakerID
+      - audio
+    properties:
+      name:
+        type: string
+        example: ninaAutheticateUser
+      speakerID:
+        type: string
+        description: The id of the user for who enrollment is being verified. 
+      audio:
+        type: string
+        description: A string containing audio that is base 64 and URL Encoded         
   ninaEnrollUser:
     type: object
     required:
