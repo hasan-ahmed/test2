@@ -401,35 +401,6 @@ definitions:
       audio:
         type: string
         description: A string containing audio that is base 64 and URL Encoded
-  ninaVerifyUserEnrollment:
-    type: object
-    required:
-      - name
-      - speakerID
-    properties:
-      name:
-        type: string
-        example: ninaEnrollUser
-      speakerID:
-        type: string
-        description: The id of the user for who enrollment is being verified.
-        example: s699sh23    
-  ninaAuthenticateUser:
-    type: object
-    required:
-      - name
-      - speakerID
-      - audio
-    properties:
-      name:
-        type: string
-        example: ninaEnrollUser
-      speakerID:
-        type: string
-        description: The id of the user for who enrollment is being verified. 
-      audio:
-        type: string
-        description: A string containing audio that is base 64 and URL Encoded  
   errorModel:
     type: object
     required:
