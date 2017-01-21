@@ -138,31 +138,7 @@ paths:
         "400":
           description: Bad request. Invalid or missing parameter.
         "401":
-          description: Unauthorized. API key is missing or invalid.
-  /VocalPassword/ninaAuthenticateUser:
-    post:
-      tags:
-        - Vocal Password
-      summary: ninaAuthenticateUser
-      description: "Making a request to this API allows you authenticate a user based on a recording of their voice saying <my voice is my password> and their id."
-      operationId: ninaAuthenticateUser
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            $ref: "#/definitions/ninaAuthenticateUser"
-      responses:
-        "200":
-          description: "{\"VocalPassword\":{\"EnrollStatus\":{\"xmlns\":\"http://www.nuance.com/webservices/\",\"content\":\"Trained\"}}}"
-        "400":
-          description: Bad request. Invalid or missing parameter.
-        "401":
-          description: Unauthorized. API key is missing or invalid.        
+          description: Unauthorized. API key is missing or invalid.       
 definitions:
   Speech_Reco_Payload:
     type: object
