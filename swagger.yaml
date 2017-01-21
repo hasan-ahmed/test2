@@ -5,9 +5,7 @@ info:
     This  document outlines how you can use a client application access different Nuance services using our HTTP API.
     Nuance's API provides access to the following services:
       - Speech Recognition
-      - Speech Recognition & Dialog
       - NLU
-      - Speech Recognition & NLU
       - Text to Speech (TTS)
       - Vocal Password
     # API Basics
@@ -144,7 +142,7 @@ paths:
       tags:
         - Vocal Password
       summary: ninaAuthenticateUser
-      description: "Making a request to this API allows you authenticate a user based on a recording of their voice saying <my voice is my password> and their id."
+      description: "Making a request to this API allows you to authenticate a user based on a recording of their voice saying <my voice is my password> and their id."
       operationId: ninaAuthenticateUser
       consumes:
         - application/json
@@ -173,6 +171,39 @@ paths:
           description: Bad request. Invalid or missing parameter.
         "401":
           description: Unauthorized. API key is missing or invalid. 
+  /VocalPassword/ninaVerifyUserEnrollment:
+    post:
+      tags:
+        - Vocal Password
+      summary: ninaVerifyUserEnrollment
+      description: "Making a request to this API allows you to verify if a user has been enrolled with a vocal password based on a provided speakerID."
+      operationId: ninaVerifyUserEnrollment
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/ninaVerifyUserEnrollment"
+      responses:
+        "200":
+          description: |
+            
+            {
+              "VocalPassword": {
+                "boolean": {
+                  "content": true|false
+                },
+                    "final_response" : true
+              }
+            }
+        "400":
+          description: Bad request. Invalid or missing parameter.
+        "401":
+          description: Unauthorized. API key is missing or invalid.           
 definitions:
   Speech_Reco_Payload:
     type: object
@@ -181,7 +212,7 @@ definitions:
       - sr_engine
     properties:
       sr_audio_file:
-        description: Direct URL to the audio file. Must be a WAV, MP4 or AAC file.
+        description: Direct URL to the audio file. Must be a WAV, MP4 or AAC file. No self signed certificates in the URL allows. 
         type: string
         example: https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav
       sr_engine:
